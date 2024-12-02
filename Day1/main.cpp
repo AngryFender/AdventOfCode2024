@@ -8,7 +8,8 @@ int main() {
     std::string data_file = data_path + "\\day1.txt";
 
     Diff diff(data_file);
-    std::cout<<diff.getSum() ;
+    std::cout<<diff.getSum()<<"\n" ;
+    std::cout<<diff.getScore()<<"\n" ;
 
     return 0;
 }

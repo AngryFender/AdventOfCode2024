@@ -7,18 +7,21 @@
 #include <memory>
 #include <vector>
 #include <algorithm>
+#include <map>
 
 class Diff {
 private:
     std::vector<int> firstList;
     std::vector<int> secondList;
     std::vector<int> resultList;
+    std::map<int,int> secondMap;
 
 public:
     explicit Diff(std::string &filename){
         readFile(filename);
         doSort();
         doDiff();
+        censusRight();
     }
 
     int getSum(){
@@ -28,6 +31,15 @@ public:
         }
         return sum;
     }
+
+    int getScore(){
+        int score = 0;
+        for(auto i: firstList){
+            score = score + secondMap[i]*i;
+        }
+        return score;
+    }
+
 private:
 
     void readFile(std::string &fileName){
@@ -53,6 +65,14 @@ private:
 
         for (int i = 0; i < firstList.size(); ++i){
             resultList.push_back(std::abs(firstList[i]-secondList[i]));
+        }
+    }
+
+    void censusRight(){
+        int holder;
+        for(int val: secondList){
+            holder = secondMap[val];
+            secondMap[val] = holder + 1;
         }
     }
 };
