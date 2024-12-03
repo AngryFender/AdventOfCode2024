@@ -9,5 +9,12 @@ if(NOT CMAKE_DATA_PATH)
     message(FATAL_ERROR "Environment variable ADVENT_DATA_PATH is not set.")
 endif()
 
-add_subdirectory(day1)
+if(WIN32)
+    add_compile_definitions(PATH_SYMBOL="\\\\")
+else()
+    add_compile_definitions(PATH_SYMBOL="/")
+endif()
+
+add_subdirectory(Day1)
+add_subdirectory(Day2)
 
