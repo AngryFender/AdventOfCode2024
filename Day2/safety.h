@@ -42,72 +42,33 @@ private:
        file.close();
     }
 
-    void printAll()
-    {
-        for (const auto& line: store)
-        {
-            for(int val: *line)
-            {
-                std::cout<<val<<" ";
-            }
-            std::cout<<"\n";
-        }
-    }
 
     void checkSafety()
     {
         for(const auto& line: store)
         {
             bool safe = true;
-            if(line->at(0) > line->at(1))
+            bool ascending = line->at(0) < line->at(1);
+
+            int prev = 0,curr = 0,diff = 0;
+
+            for(int i=1; i<line.get()->size(); ++i )
             {
-                //descending
-                if(!checkDiff(3, line))
+                prev = line->at(i-1);
+                curr = line->at(i);
+                diff = (ascending)?(curr-prev):(prev-curr);
+                if(diff <1 || diff >3)
                 {
                     safe = false;
                 }
             }
-            else if (line->at(0)< line->at(1))
-            {
-                //ascending
-                if(!checkDiff(-3,line))
-                {
-                    safe = false;
-                }
-            }
-            else
-            {
-                safe = false;
-            }
 
-
-            if(safe)
+            if (safe)
             {
                 ++safeCount;
             }
         }
     }
-
-    bool checkDiff(int max, const std::unique_ptr<std::vector<int>>& line)
-    {
-        int prev = 0;
-        for(auto num: *line)
-        {
-            if(prev == 0)
-            {
-                prev = num;
-                continue;
-            }
-
-            if((prev - num)>max)
-            {
-                return false;
-            }
-            prev = num;
-        }
-        return true;
-    }
-
 };
 
 #endif //SAFETY_H
