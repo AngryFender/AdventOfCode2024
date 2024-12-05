@@ -1,7 +1,6 @@
 #ifndef SAFETY_H
 #define SAFETY_H
 #include <algorithm>
-#include <array>
 #include <fstream>
 #include <sstream>
 #include <memory>
@@ -42,32 +41,54 @@ private:
        file.close();
     }
 
-
     void checkSafety()
     {
         for(const auto& line: store)
         {
-            bool safe = true;
-            bool ascending = line->at(0) < line->at(1);
-
-            int prev = 0,curr = 0,diff = 0;
-
-            for(int i=1; i<line.get()->size(); ++i )
-            {
-                prev = line->at(i-1);
-                curr = line->at(i);
-                diff = (ascending)?(curr-prev):(prev-curr);
-                if(diff <1 || diff >3)
-                {
-                    safe = false;
-                }
-            }
-
-            if (safe)
-            {
+            if(checkLine(*line)){
                 ++safeCount;
             }
+            else
+            {
+                 if(tolerateLine(*line))
+                 {
+                     ++safeCount;
+                 }
+            }
+
         }
+    }
+
+    bool checkLine(const std::vector<int>& line)
+    {
+        bool ascending = line.at(0) < line.at(1);
+        int prev = 0,curr = 0,diff = 0;
+
+        for(int i=1; i < line.size(); ++i )
+        {
+            prev = line.at(i-1);
+            curr = line.at(i);
+            diff = (ascending)?(curr-prev):(prev-curr);
+            if(!(1 <= diff && diff <=3))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    bool tolerateLine(const std::vector<int>& line)
+    {
+        for(int i = 0; i < line.size(); ++ i )
+        {
+            std::vector<int> badLine = line;
+            badLine.erase(badLine.begin()+i);
+            if(checkLine(badLine))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 };
 
