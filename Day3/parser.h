@@ -6,12 +6,17 @@
 #include <string_view>
 #include <charconv>
 class Parser{
-  private:
 
     enum State{
       start = 0,
       middle,
       end
+    };
+
+    enum Status
+    {
+      doo = 0,
+      dont
     };
 
     std::string data;
@@ -44,6 +49,7 @@ class Parser{
 
     void parseData(){
         State state = State::start;
+        Status status = Status::doo;
         int win_start = 0;
         int num1_start = 0, num1_end=0;
         int num2_start = 0, num2_end=0;
@@ -53,6 +59,16 @@ class Parser{
         while(win_start<data.length()){
             switch(state){
                 case start: {
+                    if((win_start+4) < data.length() && view.substr(win_start, 4)=="do()")
+                    {
+                        status = Status::doo;
+                        win_start+=4;
+                    }
+                    if((win_start+7) < data.length() && view.substr(win_start, 7)=="don't()")
+                    {
+                        status = Status::dont;
+                        win_start+=7;
+                    }
                     if((win_start+4) < data.length() && view.substr(win_start, 4)=="mul("){
                         state = middle;
                         num1_start = win_start + 4;
@@ -81,15 +97,18 @@ class Parser{
                         state = start;
                         num2_end = win_start;
 
-                        std::string_view first_view = view.substr(num1_start,num1_end-num1_start);
-                        std::string_view second_view = view.substr(num2_start,num2_end-num2_start);
-                        int first, second;
-                        auto result1 = std::from_chars(first_view.data(), first_view.data()+ first_view.size(),first, 10);
-                        auto result2 = std::from_chars(second_view.data(), second_view.data()+ second_view.size(),second, 10);
-
-                        if(result1.ec == std::errc() && result2.ec == std::errc())
+                        if(status == Status::doo)
                         {
-                            pairs.push_back(std::pair<int,int>(first,second));
+                            std::string_view first_view = view.substr(num1_start,num1_end-num1_start);
+                            std::string_view second_view = view.substr(num2_start,num2_end-num2_start);
+                            int first, second;
+                            auto result1 = std::from_chars(first_view.data(), first_view.data()+ first_view.size(),first, 10);
+                            auto result2 = std::from_chars(second_view.data(), second_view.data()+ second_view.size(),second, 10);
+
+                            if(result1.ec == std::errc() && result2.ec == std::errc())
+                            {
+                                pairs.push_back(std::pair<int,int>(first,second));
+                            }
                         }
                     }break;
                 }
