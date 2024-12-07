@@ -38,7 +38,6 @@ private:
             }
             store.push_back(std::move(vals));
         }
-       file.close();
     }
 
     void checkSafety()
