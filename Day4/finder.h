@@ -1,6 +1,5 @@
 #ifndef FINDER_H
 #define FINDER_H
-#include <iostream>
 #include <string>
 #include <fstream>
 #include <vector>
@@ -9,16 +8,22 @@ class Finder
 {
     std::vector<std::vector<char>> store;
     int count;
+    int countAgain;
 public:
-    explicit Finder(std::string& fileName): count(0)
+
+    explicit Finder(std::string& fileName): count(0), countAgain(0)
     {
         readFile(fileName);
-        scanXmas();
+        scan();
     }
 
-    int getCount()
+    int getXmasCount()
     {
         return count;
+    }
+    int getMasCount()
+    {
+        return countAgain;
     }
 
 private:
@@ -43,7 +48,7 @@ private:
     }
 
 
-    void scanXmas()
+    void scan()
     {
         for(int y = 0; y < store.size(); ++y)
         {
@@ -51,13 +56,18 @@ private:
             {
                 if(store[y][x] == 'X')
                 {
-                    scanNeighours(y,x);
+                    scanXmas(y,x);
+                }
+
+                if(store[y][x] == 'A')
+                {
+                    scanMas(y,x);
                 }
             }
         }
     }
 
-    void scanNeighours(int y, int x)
+    void scanXmas(int y, int x)
     {
         //back
         if((x-3)>=0 && (store[y][x-1] == 'M') && store[y][x-2] == 'A' && store[y][x-3] == 'S')
@@ -107,6 +117,28 @@ private:
             ++count;
         }
 
+    }
+    void scanMas(int y, int x)
+    {
+        bool isX1 = false, isX2 = false;
+        //upleft  & downright
+        if((y-1)>=0 && (x-1)>=0 && (y+1)<store.size() && (x+1)<store[y+1].size())
+        {
+            if ((store[y-1][x-1] == 'M' && store[y+1][x+1] == 'S')||(store[y-1][x-1] == 'S' && store[y+1][x+1] == 'M'))
+                isX1 = true;
+        }
+
+        //downleft & upright
+        if((y+1)<store.size() && (x-1)>=0 && (y-1)>=0 && (x+1)<store[y+1].size())
+        {
+            if ((store[y+1][x-1] == 'M' && store[y-1][x+1] == 'S')||(store[y+1][x-1] == 'S' && store[y-1][x+1] == 'M'))
+                isX2 = true;
+        }
+
+        if(isX1 && isX2)
+        {
+            ++countAgain;
+        }
     }
 };
 #endif //FINDER_H
