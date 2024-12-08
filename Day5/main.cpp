@@ -7,6 +7,7 @@ int main(){
     dataFile.append(std::getenv("ADVENT_DATA_PATH")).append(PATH_SYMBOL).append("day5.txt");
 
     Arranger arranger(dataFile);
-    std::cout<<arranger.getMiddleSum();
+    std::cout<<arranger.getMiddleSum()<<"\n";
+    std::cout<<arranger.getSortedMiddleSum();
     return 0;
 }
