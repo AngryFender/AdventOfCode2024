@@ -7,6 +7,7 @@ int main()
     dataFile.append(std::getenv("ADVENT_DATA_PATH")).append(PATH_SYMBOL).append("day6.txt");
 
     Locater locater(dataFile);
-    std::cout<<locater.getDistinctCount();
+    std::cout<<locater.getDistinctCount()<<"\n";
+    std::cout<<locater.getLoopSum();
     return 0;
 }
