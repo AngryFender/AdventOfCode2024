@@ -80,6 +80,13 @@ private:
             return true;
         }
 
+        std::string combine = std::to_string(result) + std::to_string(line[index]);
+
+        if(checkLine(value, std::stoll(combine), index+1, line))
+        {
+            return true;
+        }
+
         return false;
     }
 
